@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Qrafty: free QR codes that never expire</title>
+  <meta name="description" content="Qrafty is a free QR code maker with custom shapes, colors, logos and frames. Codes are made in your browser and never expire.">
+  <meta name="theme-color" content="#16150e">
+  <meta property="og:title" content="Qrafty">
+  <meta property="og:description" content="Free QR codes with custom shapes, colors, logos and frames. Made in your browser, and they never expire.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ffe566'/%3E%3Cpath fill='%231b1900' fill-rule='evenodd' d='M7 7h18v18H7zM11 11v10h10V11z'/%3E%3Crect x='13.5' y='13.5' width='5' height='5' rx='1' fill='%231b1900'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <a class="skip" href="#controls">Skip to the QR code options</a>
+
+  <header class="wrap topbar">
+    <a class="mark" href="./" aria-label="Qrafty home">
+      <span class="mark-tile" aria-hidden="true">
+        <svg viewBox="0 0 30 30"><path fill="currentColor" fill-rule="evenodd" d="M6 6h18v18H6zM10 10v10h10V10z"/><rect x="12.5" y="12.5" width="5" height="5" rx="1" fill="currentColor"/></svg>
+      </span>Qrafty
+    </a>
+    <nav class="nav" aria-label="Main">
+      <a href="https://direkjames.github.io/">More free tools on Kitly</a>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <div class="intro">
+      <h1 class="intro-title">Make a QR code that never expires</h1>
+      <p class="intro-text">Qrafty builds your code right here in your browser. Your link goes straight into the code, so there's no redirect, no account and no expiry date.</p>
+    </div>
+
+    <noscript>
+      <p class="noscript">Qrafty needs JavaScript to draw QR codes. Turn it on in your browser, then reload this page.</p>
+    </noscript>
+
+    <div class="layout">
+      <div class="output">
+        <div class="stage-card">
+          <div class="stage">
+            <div class="code" id="code" aria-live="off"></div>
+          </div>
+          <div class="actions">
+            <button class="btn btn-ink" type="button" id="download-png">Download PNG</button>
+            <button class="btn btn-ink-line" type="button" id="download-svg">Download SVG</button>
+          </div>
+        </div>
+
+        <div class="status" id="status" aria-live="polite" hidden>
+          <p class="message" id="message" hidden></p>
+          <ul class="notes" id="notes"></ul>
+        </div>
+
+        <div class="output-more">
+          <div class="field field-inline">
+            <label for="png-size">PNG size</label>
+            <select id="png-size">
+              <option value="512">512 px, for screens</option>
+              <option value="1024" selected>1024 px, for most uses</option>
+              <option value="2048">2048 px, for print</option>
+            </select>
+          </div>
+
+          <p class="hint">Scan the code with your phone before you print it.</p>
+
+          <details class="contains">
+            <summary>See exactly what this code contains</summary>
+            <pre id="payload"></pre>
+          </details>
+        </div>
+      </div>
+
+      <form class="controls" id="controls" autocomplete="off">
+        <section class="panel" aria-labelledby="content-title">
+          <h2 class="panel-title" id="content-title">Content</h2>
+
+          <div class="seg" role="radiogroup" aria-label="Type of code">
+            <label class="seg-item"><input type="radio" name="type" value="link" checked><span>Link</span></label>
+            <label class="seg-item"><input type="radio" name="type" value="text"><span>Text</span></label>
+            <label class="seg-item"><input type="radio" name="type" value="wifi"><span>Wi-Fi</span></label>
+            <label class="seg-item"><input type="radio" name="type" value="contact"><span>Contact</span></label>
+          </div>
+
+          <div class="fields" data-fields="link">
+            <div class="field">
+              <label for="link">Link</label>
+              <input type="text" id="link" name="link" inputmode="url" placeholder="example.com/menu" spellcheck="false" autocapitalize="off">
+              <p class="hint">Qrafty adds https:// if you leave it out.</p>
+            </div>
+          </div>
+
+          <div class="fields" data-fields="text" hidden>
+            <div class="field">
+              <label for="text">Text</label>
+              <textarea id="text" name="text" rows="4" placeholder="Table 12. Order at the counter."></textarea>
+            </div>
+          </div>
+
+          <div class="fields" data-fields="wifi" hidden>
+            <div class="field">
+              <label for="wifi-name">Network name</label>
+              <input type="text" id="wifi-name" name="wifiName" placeholder="Cafe Guest" spellcheck="false" autocapitalize="off">
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="wifi-security">Security</label>
+                <select id="wifi-security" name="wifiSecurity">
+                  <option value="WPA" selected>WPA, WPA2 or WPA3</option>
+                  <option value="WEP">WEP</option>
+                  <option value="nopass">No password</option>
+                </select>
+              </div>
+              <div class="field" data-wifi-password>
+                <label for="wifi-password">Password</label>
+                <input type="text" id="wifi-password" name="wifiPassword" spellcheck="false" autocapitalize="off">
+              </div>
+            </div>
+            <label class="check"><input type="checkbox" name="wifiHidden"><span>This is a hidden network</span></label>
+            <p class="hint">Scanning the code joins the network. The password stays on this page and isn't sent anywhere.</p>
+          </div>
+
+          <div class="fields" data-fields="contact" hidden>
+            <div class="field-row">
+              <div class="field">
+                <label for="c-first">First name</label>
+                <input type="text" id="c-first" name="cFirst">
+              </div>
+              <div class="field">
+                <label for="c-last">Last name</label>
+                <input type="text" id="c-last" name="cLast">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="c-phone">Phone</label>
+                <input type="text" id="c-phone" name="cPhone" inputmode="tel" placeholder="+63 917 123 4567">
+              </div>
+              <div class="field">
+                <label for="c-email">Email</label>
+                <input type="text" id="c-email" name="cEmail" inputmode="email" placeholder="name@example.com" spellcheck="false" autocapitalize="off">
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label for="c-org">Company</label>
+                <input type="text" id="c-org" name="cOrg">
+              </div>
+              <div class="field">
+                <label for="c-title">Job title</label>
+                <input type="text" id="c-title" name="cTitle">
+              </div>
+            </div>
+            <div class="field">
+              <label for="c-url">Website</label>
+              <input type="text" id="c-url" name="cUrl" inputmode="url" placeholder="example.com" spellcheck="false" autocapitalize="off">
+            </div>
+            <p class="hint">Scanning the code offers to save this person as a contact.</p>
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="shape-title">
+          <h2 class="panel-title" id="shape-title">Shapes</h2>
+
+          <fieldset class="group">
+            <legend>Dots</legend>
+            <div class="tiles">
+              <label class="tile"><input type="radio" name="dots" value="square" checked><span class="tile-body"><span class="tile-art" data-art="dots:square"></span><span class="tile-name">Square</span></span></label>
+              <label class="tile"><input type="radio" name="dots" value="rounded"><span class="tile-body"><span class="tile-art" data-art="dots:rounded"></span><span class="tile-name">Soft</span></span></label>
+              <label class="tile"><input type="radio" name="dots" value="dots"><span class="tile-body"><span class="tile-art" data-art="dots:dots"></span><span class="tile-name">Circles</span></span></label>
+              <label class="tile"><input type="radio" name="dots" value="smooth"><span class="tile-body"><span class="tile-art" data-art="dots:smooth"></span><span class="tile-name">Smooth</span></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Corner frames</legend>
+            <div class="tiles">
+              <label class="tile"><input type="radio" name="markerFrame" value="square" checked><span class="tile-body"><span class="tile-art" data-art="frame:square"></span><span class="tile-name">Square</span></span></label>
+              <label class="tile"><input type="radio" name="markerFrame" value="rounded"><span class="tile-body"><span class="tile-art" data-art="frame:rounded"></span><span class="tile-name">Soft</span></span></label>
+              <label class="tile"><input type="radio" name="markerFrame" value="round"><span class="tile-body"><span class="tile-art" data-art="frame:round"></span><span class="tile-name">Round</span></span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="group">
+            <legend>Corner centers</legend>
+            <div class="tiles">
+              <label class="tile"><input type="radio" name="markerDot" value="square" checked><span class="tile-body"><span class="tile-art" data-art="center:square"></span><span class="tile-name">Square</span></span></label>
+              <label class="tile"><input type="radio" name="markerDot" value="rounded"><span class="tile-body"><span class="tile-art" data-art="center:rounded"></span><span class="tile-name">Soft</span></span></label>
+              <label class="tile"><input type="radio" name="markerDot" value="dot"><span class="tile-body"><span class="tile-art" data-art="center:dot"></span><span class="tile-name">Circle</span></span></label>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="panel" aria-labelledby="color-title">
+          <h2 class="panel-title" id="color-title">Colors</h2>
+
+          <div class="colors">
+            <div class="color">
+              <label for="color-dots">Dots</label>
+              <div class="color-pick"><input type="color" id="color-dots" name="colorDots" value="#000000"><output for="color-dots" data-hex="colorDots">#000000</output></div>
+            </div>
+            <div class="color">
+              <label for="color-markers">Corner markers</label>
+              <div class="color-pick"><input type="color" id="color-markers" name="colorMarkers" value="#000000"><output for="color-markers" data-hex="colorMarkers">#000000</output></div>
+            </div>
+            <div class="color">
+              <label for="color-bg">Background</label>
+              <div class="color-pick"><input type="color" id="color-bg" name="colorBg" value="#ffffff"><output for="color-bg" data-hex="colorBg">#ffffff</output></div>
+            </div>
+          </div>
+
+          <label class="check"><input type="checkbox" name="markersMatch" checked><span>Corner markers use the dot color</span></label>
+          <label class="check"><input type="checkbox" name="transparent"><span>Transparent background</span></label>
+        </section>
+
+        <section class="panel" aria-labelledby="logo-title">
+          <h2 class="panel-title" id="logo-title">Logo</h2>
+          <p class="hint">Put an image in the middle of the code. It stays on your device, and Qrafty strengthens the code so it still scans.</p>
+
+          <div class="logo-row">
+            <label class="btn btn-line file-btn">
+              <input type="file" id="logo-file" accept="image/png,image/jpeg,image/svg+xml,image/webp,image/gif">
+              <span id="logo-choose">Choose an image</span>
+            </label>
+            <button class="btn btn-line" type="button" id="logo-remove" hidden>Remove logo</button>
+            <span class="logo-name" id="logo-name"></span>
+          </div>
+          <p class="message" id="logo-error" hidden></p>
+
+          <div class="field" id="logo-size-field" hidden>
+            <label for="logo-size">Logo size <output id="logo-size-out" for="logo-size">22%</output></label>
+            <input type="range" id="logo-size" name="logoSize" min="14" max="28" step="1" value="22">
+          </div>
+        </section>
+
+        <section class="panel" aria-labelledby="frame-title">
+          <h2 class="panel-title" id="frame-title">Frame</h2>
+
+          <div class="seg" role="radiogroup" aria-label="Frame">
+            <label class="seg-item"><input type="radio" name="frame" value="none" checked><span>No frame</span></label>
+            <label class="seg-item"><input type="radio" name="frame" value="bottom"><span>Label below</span></label>
+            <label class="seg-item"><input type="radio" name="frame" value="top"><span>Label above</span></label>
+          </div>
+
+          <div class="field" id="label-field" hidden>
+            <label for="label">Label</label>
+            <input type="text" id="label" name="label" value="Scan me" maxlength="28">
+            <p class="hint">The frame uses the dot color. Clear the label for a plain border.</p>
+          </div>
+        </section>
+      </form>
+    </div>
+  </main>
+
+  <footer class="wrap">
+    <div class="footer">
+      <p>Qrafty is made by <a href="https://github.com/direkjames" target="_blank" rel="noopener">direkjames</a>.</p>
+      <p><a href="https://direkjames.github.io/">More free tools on Kitly</a></p>
+    </div>
+  </footer>
+
+  <script src="assets/vendor/qrcode.js"></script>
+  <script src="assets/render.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>
